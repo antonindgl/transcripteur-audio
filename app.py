@@ -97,8 +97,9 @@ html(f"""
 # ---------------------------------------------------------------- Outil
 col1, col2, col3 = st.columns(3)
 model_size = col1.selectbox(
-    "Modèle Whisper", MODEL_SIZES, index=2,
-    help="Plus grand = plus précis mais plus lent. 'small' est un bon compromis.",
+    "Modèle Whisper", MODEL_SIZES, index=1,
+    help="Plus grand = plus précis mais plus lent. 'base' est rapide, 'small' est un bon "
+         "compromis. 'medium' et 'large-v3' demandent beaucoup de mémoire.",
 )
 lang_choice = col2.selectbox(
     "Langue de l'audio", ["auto"] + list(LANGUAGES),
