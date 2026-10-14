@@ -1,0 +1,5 @@
+streamlit>=1.40
+faster-whisper>=1.1.0
+av>=14,<16  # PyAV 16+ a retiré metadata_errors, utilisé par faster-whisper
+deep-translator>=1.11.4
+fpdf2>=2.8.1
