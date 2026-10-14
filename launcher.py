@@ -3,6 +3,7 @@ import os
 import sys
 
 # Importés ici pour que PyInstaller les embarque (app.py est chargé dynamiquement par Streamlit).
+import core.access  # noqa: F401
 import core.exporters  # noqa: F401
 import core.languages  # noqa: F401
 import core.transcriber  # noqa: F401

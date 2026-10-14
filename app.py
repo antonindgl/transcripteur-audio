@@ -8,6 +8,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 from core import exporters
+from core.access import require_access
 from core.languages import LANGUAGES, label
 from core.transcriber import MODEL_SIZES, SUPPORTED_EXTENSIONS, load_model, transcribe
 from core.translator import translate_result
@@ -61,6 +62,7 @@ def show_result(res, title: str, key: str):
 
 # ---------------------------------------------------------------- Page : en-tête
 st.markdown(f"<style>{CSS}</style>", unsafe_allow_html=True)
+require_access()
 bars = "".join(f'<span style="--h:{h}%;--d:{i * 0.11:.2f}s"></span>' for i, h in enumerate(WAVE_HEIGHTS))
 html(f"""
 <div class="nav">
