@@ -2,7 +2,9 @@
 
 Transcrit des fichiers audio (MP3, WAV, M4A, FLAC, OGG) en texte, dans 25 langues, avec traduction optionnelle et export TXT, SRT ou PDF. La transcription tourne **en local** sur votre ordinateur (Faster-Whisper) ; seule la traduction utilise Internet (Google Translate).
 
-## Utiliser en ligne (version hébergée)
+## Utiliser en ligne
+
+**Site : https://transcripteur-audio-3c5xrxmndstaxa9mupdbmg.streamlit.app** (un code d'accès est demandé)
 
 L'application peut être hébergée sur [Streamlit Community Cloud](https://share.streamlit.io) : connectez-vous avec GitHub, « Create app », dépôt `antonindgl/transcripteur-audio`, branche `main`, fichier `app.py`, Python 3.12.
 
