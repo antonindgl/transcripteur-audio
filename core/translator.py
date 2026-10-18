@@ -9,9 +9,6 @@ from __future__ import annotations
 import time
 from typing import Callable, Optional
 
-from deep_translator import GoogleTranslator
-from deep_translator.exceptions import RequestError, TooManyRequests
-
 from .languages import translate_code
 from .transcriber import Segment, TranscriptionResult
 
@@ -21,8 +18,10 @@ RETRIES = 5
 PAUSE = 0.6           # secondes entre deux requêtes
 
 
-def _call(translator: GoogleTranslator, text: str) -> str:
+def _call(translator, text: str) -> str:
     """Une requête, avec attente croissante si Google limite le débit."""
+    from deep_translator.exceptions import RequestError, TooManyRequests
+
     for attempt in range(RETRIES):
         try:
             return translator.translate(text) or ""
@@ -33,7 +32,7 @@ def _call(translator: GoogleTranslator, text: str) -> str:
     return ""
 
 
-def _translate_lines(translator: GoogleTranslator, lines: list[str]) -> list[str]:
+def _translate_lines(translator, lines: list[str]) -> list[str]:
     """Traduit des lignes en une requête ; si l'alignement se perd, une par une."""
     joined = "\n".join(lines)
     out = _call(translator, joined).split("\n")
@@ -63,6 +62,8 @@ def translate_result(
     target: str,
     progress_cb: Optional[Callable[[float], None]] = None,
 ) -> TranscriptionResult:
+    from deep_translator import GoogleTranslator
+
     source = translate_code(result.language) if result.language else "auto"
     translator = GoogleTranslator(source=source, target=translate_code(target))
 

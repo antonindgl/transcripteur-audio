@@ -4,8 +4,6 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from fpdf import FPDF
-
 from .transcriber import TranscriptionResult
 
 FONT_DIR = Path(__file__).resolve().parent.parent / "assets" / "fonts"
@@ -42,7 +40,9 @@ def _latin1(s: str) -> str:
     return s.encode("latin-1", "replace").decode("latin-1")
 
 
-def _build_pdf(title: str, text: str, font: Path | None) -> FPDF:
+def _build_pdf(title: str, text: str, font: Path | None):
+    from fpdf import FPDF
+
     pdf = FPDF()
     pdf.set_auto_page_break(True, margin=15)
     pdf.add_page()

@@ -1,5 +1,17 @@
-streamlit>=1.40
-faster-whisper>=1.1.0
-av>=14,<16  # PyAV 16+ a retiré metadata_errors, utilisé par faster-whisper
+streamlit==1.41.1 ; python_version < "3.13"
+streamlit>=1.40 ; python_version >= "3.13"
+faster-whisper==1.1.1 ; python_version < "3.13"
+faster-whisper>=1.1.0 ; python_version >= "3.13"
+av==14.0.1 ; python_version < "3.13"
+av>=14,<16 ; python_version >= "3.13"
 deep-translator>=1.11.4
 fpdf2>=2.8.1
+# Versions anciennes et stables pour l'hébergement (Python 3.12) : les toutes dernières
+# versions de ces bibliothèques natives faisaient planter le serveur.
+numpy==1.26.4 ; python_version < "3.13"
+pandas==2.2.3 ; python_version < "3.13"
+pyarrow==17.0.0 ; python_version < "3.13"
+ctranslate2==4.5.0 ; python_version < "3.13"
+onnxruntime==1.20.1 ; python_version < "3.13"
+huggingface-hub==0.27.1 ; python_version < "3.13"
+tokenizers==0.21.0 ; python_version < "3.13"

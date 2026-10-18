@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
-from faster_whisper import WhisperModel
+if TYPE_CHECKING:  # faster_whisper est chargé seulement au moment de transcrire (démarrage léger)
+    from faster_whisper import WhisperModel
 
 SUPPORTED_EXTENSIONS = ("mp3", "wav", "m4a", "flac", "ogg")
 MODEL_SIZES = ["tiny", "base", "small", "medium", "large-v3"]
@@ -35,6 +36,8 @@ def load_model(size: str = "small", device: str = "auto", compute_type: str = "i
     `int8` divise la mémoire par ~3 par rapport à float32 (précision quasi identique) :
     indispensable sur un hébergement gratuit (~1 Go) et plus rapide sur processeur.
     """
+    from faster_whisper import WhisperModel
+
     return WhisperModel(size, device=device, compute_type=compute_type, cpu_threads=2, num_workers=1)
 
 
