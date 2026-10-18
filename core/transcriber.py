@@ -29,9 +29,13 @@ class TranscriptionResult:
         return "\n".join(s.text for s in self.segments)
 
 
-def load_model(size: str = "small", device: str = "auto", compute_type: str = "auto") -> WhisperModel:
-    """Charge (et télécharge au 1er usage) le modèle Whisper."""
-    return WhisperModel(size, device=device, compute_type=compute_type)
+def load_model(size: str = "small", device: str = "auto", compute_type: str = "int8") -> WhisperModel:
+    """Charge (et télécharge au 1er usage) le modèle Whisper.
+
+    `int8` divise la mémoire par ~3 par rapport à float32 (précision quasi identique) :
+    indispensable sur un hébergement gratuit (~1 Go) et plus rapide sur processeur.
+    """
+    return WhisperModel(size, device=device, compute_type=compute_type, cpu_threads=2, num_workers=1)
 
 
 def transcribe(

@@ -21,6 +21,9 @@ st.set_page_config(
 CSS = (Path(__file__).parent / "assets" / "style.css").read_text(encoding="utf-8")
 WAVE_HEIGHTS = [30, 52, 78, 44, 92, 60, 84, 40, 96, 66, 36, 88, 54, 32, 72, 48]
 SHOWN_LANGS = ["en", "fr", "es", "zh", "de", "ja", "ar", "pt", "ru", "hi", "ko", "tr"]
+# Hébergement gratuit (Streamlit Community Cloud) : ~1 Go de mémoire, seuls les petits modèles tiennent.
+ON_CLOUD = Path(__file__).resolve().as_posix().startswith("/mount/")
+AVAILABLE_MODELS = [m for m in MODEL_SIZES if m in ("tiny", "base")] if ON_CLOUD else MODEL_SIZES
 
 
 def html(block: str):
@@ -97,7 +100,7 @@ html(f"""
 # ---------------------------------------------------------------- Outil
 col1, col2, col3 = st.columns(3)
 model_size = col1.selectbox(
-    "Modèle Whisper", MODEL_SIZES, index=1,
+    "Modèle Whisper", AVAILABLE_MODELS, index=AVAILABLE_MODELS.index("base"),
     help="Plus grand = plus précis mais plus lent. 'base' est rapide, 'small' est un bon "
          "compromis. 'medium' et 'large-v3' demandent beaucoup de mémoire.",
 )
