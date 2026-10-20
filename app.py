@@ -13,6 +13,7 @@ import streamlit.components.v1 as components
 
 from core import exporters, jobs
 from core.access import require_access
+from core.browser_translate import translate_widget
 from core.languages import LANGUAGES, label
 from core.transcriber import MODEL_SIZES, SUPPORTED_EXTENSIONS
 
@@ -105,11 +106,15 @@ def live_panel(job_id: str):
 
 
 def finished_panel(job):
-    if job.status == "done":
+    # Une transcription terminée reste valable même si une traduction côté serveur a échoué.
+    transcribed = job.status == "done" or (
+        job.status == "error" and job.progress >= 0.999 and job.segments
+    )
+    if transcribed:
         if not job.segments:
             st.warning("Aucune parole détectée dans ce fichier.")
         else:
-            st.success(f"Terminé en {fmt_duration(job.updated - job.created)}.")
+            st.success(f"Transcription terminée en {fmt_duration(job.updated - job.created)}.")
             st.info(f"Langue détectée : **{label(job.detected_language)}** "
                     f"(confiance {job.probability:.0%}) · durée {fmt_duration(job.duration)}")
             stem = Path(job.name).stem
@@ -121,6 +126,14 @@ def finished_panel(job):
                     show_result(job.result(True), "Traduction", f"{stem}_{job.target}")
             else:
                 show_result(job.result(), "Transcription", stem)
+                st.subheader("Traduire")
+                if job.translation_error or job.status == "error":
+                    st.caption("La traduction automatique du serveur n'a pas abouti. "
+                               "Utilisez le traducteur ci-dessous : il fonctionne depuis votre navigateur.")
+                else:
+                    st.caption("Choisissez la langue, puis cliquez sur « Traduire ». "
+                               "La traduction se fait depuis votre navigateur.")
+                translate_widget(job.segments, job.detected_language, job.target or "en", stem)
     elif job.status == "cancelled":
         st.warning("Transcription annulée.")
         if job.segments:

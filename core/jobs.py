@@ -47,6 +47,7 @@ class Job:
     segments: list = field(default_factory=list)    # [[début, fin, texte], ...]
     translated: list = field(default_factory=list)
     error: str = ""
+    translation_error: str = ""         # la traduction côté serveur a échoué (la transcription reste valide)
     created: float = field(default_factory=time.time)
     updated: float = field(default_factory=time.time)
 
@@ -152,14 +153,20 @@ def _run(job: Job) -> None:
             job.save()
             return
 
-        if job.target and job.segments and not job.translated:
+        # Sur l'hébergement gratuit, Google bloque les serveurs : la traduction se fait alors
+        # dans le navigateur de l'utilisateur (voir browser_translate). En local, elle reste côté
+        # serveur, mais son échec ne fait jamais perdre la transcription.
+        if job.target and job.segments and not job.translated and not ON_CLOUD:
             job.status = "translating"
             job.save()
-            res = translate_result(
-                job.result(), job.target,
-                lambda p: setattr(job, "progress", p),
-            )
-            job.translated = [[s.start, s.end, s.text] for s in res.segments]
+            try:
+                res = translate_result(
+                    job.result(), job.target,
+                    lambda p: setattr(job, "progress", p),
+                )
+                job.translated = [[s.start, s.end, s.text] for s in res.segments]
+            except Exception as e:  # noqa: BLE001
+                job.translation_error = f"{type(e).__name__}: {e}"
         job.progress, job.status = 1.0, "done"
         job.save()
         _cleanup_files(job)
